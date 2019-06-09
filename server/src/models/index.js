@@ -1,15 +1,45 @@
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
-const Sequelize = require('sequelize')
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
 
-const config = require('../config')
+const config = require('../config');
 
-const basename = path.basename(__filename)
-const db = {}
+const basename = path.basename(__filename);
+const db = {};
 
-const sequelize = new Sequelize(config.get('dbUrl'), { logging: false })
+/*
+
+johndb.cf5zwreyhom2.us-east-1.rds.amazonaws.com
+"dbUrl_new": 
+"User ID=awsuser;
+Password=Password12345;
+Host=
+johndb.cf5zwreyhom2.us-east-1.rds.amazonaws.com;
+Port=5432;
+Database=hedgehog_demo",
+*/
+
+const sequelize = new Sequelize(config.get('dbUrl'), { logging: false });
+
+//new Sequelize('postgres://awsuser:Password12345@johndb.cf5zwreyhom2.us-east-1.rds.amazonaws.com:5432/hedgehog_demo');
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+// const sequelize =  new Sequelize(
+// 'hedgehog_demo', 
+// 'awsuser', 'Password12345', {
+//   port: '5432',
+//   host: 'johndb.cf5zwreyhom2.us-east-1.rds.amazonaws.com',
+//   dialect: 'postgres'
+// });
+
 
 fs
   .readdirSync(__dirname)

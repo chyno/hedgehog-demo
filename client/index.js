@@ -1,10 +1,10 @@
 /* globals React, Hedgehog */
-const useState = React.useState
-const useEffect = React.useEffect
-const useRef = React.useRef
+const useState = React.useState;
+const useEffect = React.useEffect;
+const useRef = React.useRef;
 
-const AUTH_TABLE = 'Authentications'
-const USER_TABLE = 'Users'
+const AUTH_TABLE = 'Authentications';
+const USER_TABLE = 'Users';
 
 const requestToServer = async (axiosRequestObj) => {
   axiosRequestObj.baseURL = 'http://localhost:3001/'
@@ -12,22 +12,22 @@ const requestToServer = async (axiosRequestObj) => {
   try {
     const resp = await axios(axiosRequestObj)
     if (resp.status === 200) {
-      return resp.data
+      return resp.data;
     } else {
-      throw new Error('Server returned error: ' + resp.status.toString() + ' ' + resp.data['error'])
+      throw new Error('Server returned error: ' + resp.status.toString() + ' ' + resp.data['error']);
     }
   } catch (e) {
-    throw new Error('Server returned error: ' + e.response.status.toString() + ' ' + e.response.data['error'])
+    throw new Error('Server returned error: ' + e.response.status.toString() + ' ' + e.response.data['error']);
   }
-}
+};
 
 const setAuthFn = async (obj) => {
   await requestToServer({
     url: '/authentication',
     method: 'post',
     data: obj
-  })
-}
+  });
+};
 
 const setUserFn = async (obj) => {
   await requestToServer({

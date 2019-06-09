@@ -1,12 +1,12 @@
-var express = require('express')
-var path = require('path')
-var logger = require('morgan')
-var cors = require('cors')
+var express = require('express');
+var path = require('path');
+var logger = require('morgan');
+var cors = require('cors');
 
-var authRouter = require('./routes/authentication')
-var userRouter = require('./routes/user')
+var authRouter = require('./routes/authentication');
+var userRouter = require('./routes/user');
 
-var app = express()
+var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -35,4 +35,4 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500).send()
 })
 
-module.exports = app
+module.exports = app;
