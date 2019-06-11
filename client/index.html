@@ -1,21 +1,36 @@
+<!DOCTYPE html>
 <html lang='en'>
-
 <head>
-  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+  
+   <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-  <script src="./browser.js" type="text/javascript"></script>
-
+  <script src="./browser.js" type="text/javascript"></script> -->
   <link rel='stylesheet' type='text/css' href='./style.css' />
-
   <meta content="width=device-width, initial-scale=1" name="viewport" />
+   
 </head>
 <body>
-  <div id="root">
-  <script src="./index.js" type="text/jsx"></script>
+  <div id="root">Hello world 5 </div>
+  <!-- <script src="./main.js"  >
+    alert('dd');
+    document.getElementById('root').innerHTML = 'in index';
+  </script> -->
+  <script type="module">
+  //  import { Hedgehog } from './node_modules/@audius/hedgehog/index.js';
+    import { getMessage } from './foo.js';
+    let msg = 'none';
+    try {
+       let hh = new Hedgehog();
+       msg = JSON.stringify(hh);
+    } catch (err) {
+     msg = err;
+    }
+    alert(msg);
+    alert(getMessage());
+
+  </script>
+  <!-- <script type="module" src="./main.js"></script> -->
 </body>
-<footer>
-</footer>
+
 
 </html>

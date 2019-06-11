@@ -1,27 +1,13 @@
-'use strict'
+'use strict';
 
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-
 const config = require('../config');
-
 const basename = path.basename(__filename);
 const db = {};
-
-/*
-
-johndb.cf5zwreyhom2.us-east-1.rds.amazonaws.com
-"dbUrl_new": 
-"User ID=awsuser;
-Password=Password12345;
-Host=
-johndb.cf5zwreyhom2.us-east-1.rds.amazonaws.com;
-Port=5432;
-Database=hedgehog_demo",
-*/
-
-const sequelize = new Sequelize(config.get('dbUrl'), { logging: false });
+const sequelize = new Sequelize(config.get('dbUrl'),
+ { logging: false });
 
 //new Sequelize('postgres://awsuser:Password12345@johndb.cf5zwreyhom2.us-east-1.rds.amazonaws.com:5432/hedgehog_demo');
 sequelize
@@ -32,32 +18,25 @@ sequelize
   .catch(err => {
     console.error('Unable to connect to the database:', err);
   });
-// const sequelize =  new Sequelize(
-// 'hedgehog_demo', 
-// 'awsuser', 'Password12345', {
-//   port: '5432',
-//   host: 'johndb.cf5zwreyhom2.us-east-1.rds.amazonaws.com',
-//   dialect: 'postgres'
-// });
 
 
-fs
-  .readdirSync(__dirname)
+
+fs.readdirSync(__dirname)
   .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js')
+    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
   })
   .forEach(file => {
     const model = sequelize['import'](path.join(__dirname, file))
-    db[model.name] = model
-  })
+    db[model.name] = model;
+  });
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
-    db[modelName].associate(db)
+    db[modelName].associate(db);
   }
-})
+});
 
-db.sequelize = sequelize
-db.Sequelize = Sequelize
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-module.exports = db
+module.exports = db;

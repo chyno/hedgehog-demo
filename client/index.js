@@ -1,51 +1,15 @@
+import { isLoggedIn, 
+  walletExistsLocally,
+  hhlogin, 
+  hhlogout, 
+  getAddressString } from './hedgehog';
+  
 /* globals React, Hedgehog */
 const useState = React.useState;
 const useEffect = React.useEffect;
 const useRef = React.useRef;
-
 const AUTH_TABLE = 'Authentications';
 const USER_TABLE = 'Users';
-
-const requestToServer = async (axiosRequestObj) => {
-  axiosRequestObj.baseURL = 'http://localhost:3001/'
-
-  try {
-    const resp = await axios(axiosRequestObj)
-    if (resp.status === 200) {
-      return resp.data;
-    } else {
-      throw new Error('Server returned error: ' + resp.status.toString() + ' ' + resp.data['error']);
-    }
-  } catch (e) {
-    throw new Error('Server returned error: ' + e.response.status.toString() + ' ' + e.response.data['error']);
-  }
-};
-
-const setAuthFn = async (obj) => {
-  await requestToServer({
-    url: '/authentication',
-    method: 'post',
-    data: obj
-  });
-};
-
-const setUserFn = async (obj) => {
-  await requestToServer({
-    url: '/user',
-    method: 'post',
-    data: obj
-  })
-}
-
-const getFn = async (obj) => {
-  return requestToServer({
-    url: '/authentication',
-    method: 'get',
-    params: obj
-  })
-}
-
-const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn)
 
 const messages = {
   signedIn: {
@@ -128,14 +92,11 @@ const App = props => {
   const [loading, setLoading] = useState(false);
 
   const checkWalletStatus = () => {
-    if (hedgehog.isLoggedIn()) {
+    if (isLoggedIn()) {
       setSignedIn(true);
       // Retrieve wallet with: hedgehog.getWallet()
     } else {
-      if (
-        hedgehog &&
-        hedgehog.walletExistsLocally &&
-        hedgehog.walletExistsLocally()
+      if (walletExistsLocally()
       ) {
         setSignedIn(true);
         // Retrieve wallet with: hedgehog.restoreLocalWallet()
@@ -154,7 +115,7 @@ const App = props => {
       setLoading(true);
       setErrorMessage("");
       try {
-        await hedgehog.signUp(username, password);
+        await signUp(username, password);
         checkWalletStatus();
       } catch (e) {
         console.error(e);
@@ -168,7 +129,7 @@ const App = props => {
     setErrorMessage("");
     setLoading(true);
     try {
-      await hedgehog.login(username, password);
+      await hhlogin(username, password);
       checkWalletStatus();
     } catch (e) {
       console.error(e);
@@ -183,7 +144,7 @@ const App = props => {
   };
 
   const logout = () => {
-    hedgehog.logout();
+    hhlogout();
     setUsername('');
     setPassword('');
     setPasswordConfirmation('');
@@ -219,7 +180,7 @@ const App = props => {
           <h1>{messages.signedIn.header}</h1>
           <p>{messages.signedIn.body}</p>
           <p>Your wallet address is:</p>
-          <p className="address">{hedgehog.getWallet().getAddressString()}</p>
+          <p className="address">{getAddressString()}</p>
           <Button loading={loading} onClick={logout} text="Log Out" />
         </div>
       ) : (
