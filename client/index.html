@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
-  
+    <script src="./elmapp/src/dist/elmapp.js"></script>
    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
   <script src="./browser.js" type="text/javascript"></script> 
@@ -10,12 +10,16 @@
    
 </head>
 <body>
-  <div id="root">Hello world 5 </div>
-  <!-- <script src="./main.js"  >
-    alert('dd');
-    document.getElementById('root').innerHTML = 'in index';
-  </script> -->
+  <div id="root">Hello world 99 </div>
+  <div id="elm">
+  </div>
+  
   <script type="module">
+    let app = Elm.Main.init({
+        flags: "Hello",
+        node: document.getElementById('elm'),
+        });
+
    import {getFn, setAuthFn, setUserFn} from './hedgehog.js';
     //import { getMessage } from './foo.js';
     let msg = 'none';
