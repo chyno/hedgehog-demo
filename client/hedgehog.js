@@ -1,4 +1,4 @@
-const requestToServer = async axiosRequestObj => {
+export const requestToServer = async axiosRequestObj => {
   axiosRequestObj.baseURL = "http://localhost:3001/";
 
   try {
@@ -23,7 +23,7 @@ const requestToServer = async axiosRequestObj => {
   }
 };
 
-const setAuthFn = async obj => {
+export const setAuthFn = async obj => {
   await requestToServer({
     url: "/authentication",
     method: "post",
@@ -31,7 +31,7 @@ const setAuthFn = async obj => {
   });
 };
 
-const setUserFn = async obj => {
+export const setUserFn = async obj => {
   await requestToServer({
     url: "/user",
     method: "post",
@@ -39,8 +39,16 @@ const setUserFn = async obj => {
   });
 };
 
-const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
+export const getFn = async (obj) => {
+  return requestToServer({
+    url: '/authentication',
+    method: 'get',
+    params: obj
+  });
+};
+//const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
 
+/*
 export const isLoggedIn = () => hedgehog.isLoggedIn();
 export const walletExistsLocally = () =>
   hedgehog && hedgehog.walletExistsLocally && hedgehog.walletExistsLocally();
@@ -52,3 +60,4 @@ export const signUp = async (userName, password) =>
 
 export const hhlogout = () => hedgehog.logout();
 export const getAddressString = () => hedgehog.getWallet().getAddressString();
+*/

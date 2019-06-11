@@ -4,7 +4,7 @@
   
    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-  <script src="./browser.js" type="text/javascript"></script> -->
+  <script src="./browser.js" type="text/javascript"></script> 
   <link rel='stylesheet' type='text/css' href='./style.css' />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
    
@@ -16,17 +16,17 @@
     document.getElementById('root').innerHTML = 'in index';
   </script> -->
   <script type="module">
-  //  import { Hedgehog } from './node_modules/@audius/hedgehog/index.js';
-    import { getMessage } from './foo.js';
+   import {getFn, setAuthFn, setUserFn} from './hedgehog.js';
+    //import { getMessage } from './foo.js';
     let msg = 'none';
     try {
-       let hh = new Hedgehog();
-       msg = JSON.stringify(hh);
+      const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
+      msg = JSON.stringify(hedgehog);
     } catch (err) {
      msg = err;
     }
     alert(msg);
-    alert(getMessage());
+    
 
   </script>
   <!-- <script type="module" src="./main.js"></script> -->
