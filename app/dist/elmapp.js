@@ -4820,7 +4820,9 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 };
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
+var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$p = _VirtualDom_node('p');
+var elm$html$Html$span = _VirtualDom_node('span');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var elm$json$Json$Encode$string = _Json_wrap;
@@ -4833,7 +4835,9 @@ var elm$html$Html$Attributes$stringProperty = F2(
 	});
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
-var author$project$Main$signedInView = function (model) {
+var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
+var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
+var author$project$Main$loginView = function (model) {
 	return A2(
 		elm$html$Html$div,
 		_List_fromArray(
@@ -4854,7 +4858,7 @@ var author$project$Main$signedInView = function (model) {
 						elm$html$Html$div,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('message')
+								elm$html$Html$Attributes$class('tabs')
 							]),
 						_List_fromArray(
 							[
@@ -4862,59 +4866,175 @@ var author$project$Main$signedInView = function (model) {
 								elm$html$Html$div,
 								_List_fromArray(
 									[
-										elm$html$Html$Attributes$class('pill green')
+										elm$html$Html$Attributes$class('headers')
 									]),
 								_List_fromArray(
 									[
-										elm$html$Html$text('authenticated')
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('tab active')
+											]),
+										_List_fromArray(
+											[
+												elm$html$Html$text('Create Account')
+											])),
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('tab')
+											]),
+										_List_fromArray(
+											[
+												elm$html$Html$text('Log In')
+											]))
+									])),
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('content')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('form')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class('fields')
+													]),
+												_List_fromArray(
+													[
+														A2(
+														elm$html$Html$input,
+														_List_fromArray(
+															[
+																elm$html$Html$Attributes$placeholder('Username')
+															]),
+														_List_Nil),
+														A2(
+														elm$html$Html$input,
+														_List_fromArray(
+															[
+																elm$html$Html$Attributes$placeholder('Password'),
+																elm$html$Html$Attributes$type_('password')
+															]),
+														_List_Nil),
+														A2(
+														elm$html$Html$div,
+														_List_Nil,
+														_List_fromArray(
+															[
+																A2(
+																elm$html$Html$input,
+																_List_fromArray(
+																	[
+																		elm$html$Html$Attributes$placeholder('Confirm Password'),
+																		elm$html$Html$Attributes$type_('password')
+																	]),
+																_List_Nil),
+																A2(
+																elm$html$Html$p,
+																_List_fromArray(
+																	[
+																		elm$html$Html$Attributes$class('error')
+																	]),
+																_List_Nil)
+															]))
+													])),
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class('buttons')
+													]),
+												_List_fromArray(
+													[
+														A2(
+														elm$html$Html$div,
+														_List_fromArray(
+															[
+																elm$html$Html$Attributes$class('button fullWidth')
+															]),
+														_List_fromArray(
+															[
+																elm$html$Html$text('Create My Account')
+															])),
+														A2(
+														elm$html$Html$div,
+														_List_fromArray(
+															[
+																elm$html$Html$Attributes$class('link')
+															]),
+														_List_fromArray(
+															[
+																A2(
+																elm$html$Html$span,
+																_List_Nil,
+																_List_fromArray(
+																	[
+																		elm$html$Html$text('I already have an account.')
+																	]))
+															]))
+													]))
+											]))
+									]))
+							])),
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('message unauthenticated')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('pill red')
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('unauthenticated')
 									])),
 								A2(
 								elm$html$Html$h1,
 								_List_Nil,
 								_List_fromArray(
 									[
-										elm$html$Html$text('You\'re Signed In!')
+										elm$html$Html$text('You\'re Not Signed In')
 									])),
 								A2(
 								elm$html$Html$p,
 								_List_Nil,
 								_List_fromArray(
 									[
-										elm$html$Html$text('You just created an account using Hedgehog! Now, if you log out you will be able to sign back in with the same credentials.')
+										elm$html$Html$text('You are currently unauthenticated / signed out.')
 									])),
 								A2(
 								elm$html$Html$p,
 								_List_Nil,
 								_List_fromArray(
 									[
-										elm$html$Html$text('Your wallet address is:')
-									])),
-								A2(
-								elm$html$Html$p,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('address')
-									]),
-								_List_fromArray(
-									[
-										elm$html$Html$text('0x3cce80e16f4d5634b237f5c1c338864af4d73674')
-									])),
-								A2(
-								elm$html$Html$div,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('button')
-									]),
-								_List_fromArray(
-									[
-										elm$html$Html$text('Log Out')
+										elm$html$Html$text('Go ahead and create an account just like you would a centralized service.')
 									]))
 							]))
 					]))
 			]));
 };
 var author$project$Main$view = function (model) {
-	return author$project$Main$signedInView(model);
+	return author$project$Main$loginView(model);
 };
 var elm$browser$Browser$External = function (a) {
 	return {$: 'External', a: a};

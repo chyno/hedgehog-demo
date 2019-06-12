@@ -35,6 +35,55 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
 
+loginView : Model -> Html Msg
+loginView model =
+  div [ id "root" ]
+    [ div [ class "app" ]
+        [ div [ class "tabs" ]
+            [ div [ class "headers" ]
+                [ div [ class "tab active" ]
+                    [ text "Create Account" ]
+                , div [ class "tab" ]
+                    [ text "Log In" ]
+                ]
+            , div [ class "content" ]
+                [ div [ class "form" ]
+                    [ div [ class "fields" ]
+                        [ input [ placeholder "Username" ]
+                            []
+                        , input [ placeholder "Password", type_ "password" ]
+                            []
+                        , div []
+                            [ input [ placeholder "Confirm Password", type_ "password" ]
+                                []
+                            , p [ class "error" ]
+                                []
+                            ]
+                        ]
+                    , div [ class "buttons" ]
+                        [ div [ class "button fullWidth" ]
+                            [ text "Create My Account" ]
+                        , div [ class "link" ]
+                            [ span []
+                                [ text "I already have an account." ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        , div [ class "message unauthenticated" ]
+            [ div [ class "pill red" ]
+                [ text "unauthenticated" ]
+            , h1 []
+                [ text "You're Not Signed In" ]
+            , p []
+                [ text "You are currently unauthenticated / signed out." ]
+            , p []
+                [ text "Go ahead and create an account just like you would a centralized service." ]
+            ]
+        ]
+    ]
+
 signedInView : Model -> Html Msg
 signedInView model = 
   div [ id "root" ]
@@ -58,7 +107,7 @@ signedInView model =
 
 view : Model -> Html Msg
 view model =
-  signedInView model
+  loginView model
 
 main = 
   Browser.element
