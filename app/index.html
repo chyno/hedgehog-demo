@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
+    <script src="./hedgehog.js"></script>
     <script src="./dist/elmapp.js"></script>
    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
@@ -20,20 +21,18 @@
         node: document.getElementById('elm'),
         });
 
-  //  import {getFn, setAuthFn, setUserFn} from './hedgehog.js';
-  //   //import { getMessage } from './foo.js';
-  //   let msg = 'none';
-  //   try {
-  //     const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
-  //     msg = JSON.stringify(hedgehog);
-  //   } catch (err) {
-  //    msg = err;
-  //   }
-    //alert(msg);
+   import {getFn, setAuthFn, setUserFn} from './hedgehog.js';
+    //import { getMessage } from './foo.js';
+    let msg = 'none';
+    try {
+      const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
+      msg = JSON.stringify(hedgehog);
+    } catch (err) {
+     msg = err;
+    }
+    alert(msg);
     
-
   </script>
-  <!-- <script type="module" src="./main.js"></script> -->
 </body>
 
 
