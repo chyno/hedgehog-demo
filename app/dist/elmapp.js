@@ -4310,7 +4310,8 @@ function _Browser_load(url)
 		}
 	}));
 }
-var author$project$Main$initdata = {message: 'Looged in'};
+var author$project$Main$LoggedIn = {$: 'LoggedIn'};
+var author$project$Main$initdata = {activeTab: author$project$Main$LoggedIn, message: 'Looged in'};
 var elm$core$Basics$False = {$: 'False'};
 var elm$core$Basics$True = {$: 'True'};
 var elm$core$Result$isOk = function (result) {
@@ -4796,9 +4797,32 @@ var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
 var author$project$Main$subscriptions = function (model) {
 	return elm$core$Platform$Sub$none;
 };
+var author$project$Main$CreateAccount = {$: 'CreateAccount'};
+var author$project$Main$Login = {$: 'Login'};
 var author$project$Main$update = F2(
 	function (msg, model) {
-		return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+		switch (msg.$) {
+			case 'DoLogout':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{activeTab: author$project$Main$Login}),
+					elm$core$Platform$Cmd$none);
+			case 'DoLogIn':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{activeTab: author$project$Main$LoggedIn}),
+					elm$core$Platform$Cmd$none);
+			case 'DoCreateAccount':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{activeTab: author$project$Main$CreateAccount}),
+					elm$core$Platform$Cmd$none);
+			default:
+				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+		}
 	});
 var elm$core$Basics$identity = function (x) {
 	return x;
@@ -4819,12 +4843,22 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	}
 };
 var elm$html$Html$div = _VirtualDom_node('div');
-var elm$html$Html$h1 = _VirtualDom_node('h1');
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var author$project$Main$createAccountView = function (model) {
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				elm$html$Html$text('create account')
+			]));
+};
+var author$project$Main$DoCreateAccount = {$: 'DoCreateAccount'};
+var author$project$Main$DoLogIn = {$: 'DoLogIn'};
 var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$p = _VirtualDom_node('p');
 var elm$html$Html$span = _VirtualDom_node('span');
-var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var elm$json$Json$Encode$string = _Json_wrap;
 var elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -4834,10 +4868,186 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			elm$json$Json$Encode$string(string));
 	});
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
-var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
 var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
 var author$project$Main$loginView = function (model) {
+	return A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('content')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('form')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('fields')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$input,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$placeholder('Username')
+									]),
+								_List_Nil),
+								A2(
+								elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$input,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$placeholder('Password'),
+												elm$html$Html$Attributes$type_('password')
+											]),
+										_List_Nil),
+										A2(
+										elm$html$Html$p,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('error')
+											]),
+										_List_Nil)
+									]))
+							])),
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('buttons')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('button fullWidth'),
+										elm$html$Html$Events$onClick(author$project$Main$DoLogIn)
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('Log In')
+									])),
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('link'),
+										elm$html$Html$Events$onClick(author$project$Main$DoCreateAccount)
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$span,
+										_List_Nil,
+										_List_fromArray(
+											[
+												elm$html$Html$text('Create Account')
+											]))
+									]))
+							]))
+					]))
+			]));
+};
+var author$project$Main$DoLogout = {$: 'DoLogout'};
+var elm$html$Html$h1 = _VirtualDom_node('h1');
+var author$project$Main$signedInView = function (model) {
+	return A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('message')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('pill green')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('authenticated')
+					])),
+				A2(
+				elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('You\'re Signed In!')
+					])),
+				A2(
+				elm$html$Html$p,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('You just created an account using Hedgehog! Now, if you log out you will be able to sign back in with the same credentials.')
+					])),
+				A2(
+				elm$html$Html$p,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Your wallet address is:')
+					])),
+				A2(
+				elm$html$Html$p,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('address')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('0x3cce80e16f4d5634b237f5c1c338864af4d73674')
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('button'),
+						elm$html$Html$Events$onClick(author$project$Main$DoLogout)
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('Log Out')
+					]))
+			]));
+};
+var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
+var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$div,
 		_List_fromArray(
@@ -4854,187 +5064,19 @@ var author$project$Main$loginView = function (model) {
 					]),
 				_List_fromArray(
 					[
-						A2(
-						elm$html$Html$div,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class('tabs')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$div,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('headers')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$div,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('tab active')
-											]),
-										_List_fromArray(
-											[
-												elm$html$Html$text('Create Account')
-											])),
-										A2(
-										elm$html$Html$div,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('tab')
-											]),
-										_List_fromArray(
-											[
-												elm$html$Html$text('Log In')
-											]))
-									])),
-								A2(
-								elm$html$Html$div,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('content')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$div,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('form')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$div,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$class('fields')
-													]),
-												_List_fromArray(
-													[
-														A2(
-														elm$html$Html$input,
-														_List_fromArray(
-															[
-																elm$html$Html$Attributes$placeholder('Username')
-															]),
-														_List_Nil),
-														A2(
-														elm$html$Html$input,
-														_List_fromArray(
-															[
-																elm$html$Html$Attributes$placeholder('Password'),
-																elm$html$Html$Attributes$type_('password')
-															]),
-														_List_Nil),
-														A2(
-														elm$html$Html$div,
-														_List_Nil,
-														_List_fromArray(
-															[
-																A2(
-																elm$html$Html$input,
-																_List_fromArray(
-																	[
-																		elm$html$Html$Attributes$placeholder('Confirm Password'),
-																		elm$html$Html$Attributes$type_('password')
-																	]),
-																_List_Nil),
-																A2(
-																elm$html$Html$p,
-																_List_fromArray(
-																	[
-																		elm$html$Html$Attributes$class('error')
-																	]),
-																_List_Nil)
-															]))
-													])),
-												A2(
-												elm$html$Html$div,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$class('buttons')
-													]),
-												_List_fromArray(
-													[
-														A2(
-														elm$html$Html$div,
-														_List_fromArray(
-															[
-																elm$html$Html$Attributes$class('button fullWidth')
-															]),
-														_List_fromArray(
-															[
-																elm$html$Html$text('Create My Account')
-															])),
-														A2(
-														elm$html$Html$div,
-														_List_fromArray(
-															[
-																elm$html$Html$Attributes$class('link')
-															]),
-														_List_fromArray(
-															[
-																A2(
-																elm$html$Html$span,
-																_List_Nil,
-																_List_fromArray(
-																	[
-																		elm$html$Html$text('I already have an account.')
-																	]))
-															]))
-													]))
-											]))
-									]))
-							])),
-						A2(
-						elm$html$Html$div,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class('message unauthenticated')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$div,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('pill red')
-									]),
-								_List_fromArray(
-									[
-										elm$html$Html$text('unauthenticated')
-									])),
-								A2(
-								elm$html$Html$h1,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('You\'re Not Signed In')
-									])),
-								A2(
-								elm$html$Html$p,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('You are currently unauthenticated / signed out.')
-									])),
-								A2(
-								elm$html$Html$p,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Go ahead and create an account just like you would a centralized service.')
-									]))
-							]))
+						function () {
+						var _n0 = model.activeTab;
+						switch (_n0.$) {
+							case 'CreateAccount':
+								return author$project$Main$createAccountView(model);
+							case 'Login':
+								return author$project$Main$loginView(model);
+							default:
+								return author$project$Main$signedInView(model);
+						}
+					}()
 					]))
 			]));
-};
-var author$project$Main$view = function (model) {
-	return author$project$Main$loginView(model);
 };
 var elm$browser$Browser$External = function (a) {
 	return {$: 'External', a: a};
