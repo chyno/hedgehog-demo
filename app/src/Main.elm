@@ -29,10 +29,9 @@ init : String ->  ( Model, Cmd Msg )
 init  flag =  (initdata, Cmd.none)  
 
 type Msg
-    =  GotoLogin |
-       DoLogout | 
-       DoLogIn | 
-       DoCreateAccount
+    =  DoLogout 
+       | DoLogIn  
+       |DoCreateAccount
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -43,9 +42,7 @@ update msg model =
         ({ model | activeTab = LoggedIn }, Cmd.none)
     DoCreateAccount ->
         ({ model | activeTab = CreateAccount }, Cmd.none)
-    _ ->
-        (model, Cmd.none)
-
+    
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
