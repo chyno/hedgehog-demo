@@ -25,20 +25,29 @@ tabClassString model tab =
     
 type ActivePage =  CreateAccountTab  | LoginTab  | LoggedInPage 
 
-type Msg = AP ActivePage  |   SuccessLogin String
+type Msg = AP ActivePage  |   SuccessLogin LoginResult
 
 type alias Model =
   {
-    message: String,
+    loginResult: LoginResult,
     activeTab: ActivePage
   }
 
+type alias LoginResult =
+  {
+    isLoggedIn : Bool,
+    address: String
+  }
      
 initdata : Model
 initdata = 
     { 
-      message = "init",
-      activeTab = LoggedInPage  
+    loginResult = {
+      isLoggedIn = False,
+      address = "-"
+    },
+      
+    activeTab = LoggedInPage  
     }
 
 headersView : Model -> Html Msg
@@ -140,7 +149,7 @@ update msg model =
     AP x  ->
        updatePage x  model
     SuccessLogin data ->
-        ({ model | message = data }, Cmd.none)
+        ({ model | loginResult = data }, Cmd.none)
 
     
 updatePage : ActivePage -> Model -> ( Model, Cmd Msg )
@@ -192,7 +201,7 @@ view model =
       [ div [ class "app" ]
         [ 
             vw,
-            div[][text model.message]
+            div[][text model.loginResult.address]
         ] 
       ]
       
@@ -205,4 +214,4 @@ main =
   }
 
 port loginUser : E.Value -> Cmd msg
-port loginResult : (String -> msg) -> Sub msg
+port loginResult : (LoginResult -> msg) -> Sub msg
