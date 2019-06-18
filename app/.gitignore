@@ -9,3 +9,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 server/node_modules/
+
+
+# Created by https://www.gitignore.io/api/elm
+# Edit at https://www.gitignore.io/?templates=elm
+
+### Elm ###
+# elm-package generated files
+elm-stuff
+# elm-repl generated files
+repl-temp-*
+
+# End of https://www.gitignore.io/api/elm
