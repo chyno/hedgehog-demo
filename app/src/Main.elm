@@ -25,10 +25,15 @@ tabClassString model tab =
     
 type ActivePage =  CreateAccountTab  | LoginTab  | LoggedInPage 
 
-type Msg = AP ActivePage  |   SuccessLogin LoginResult
+type Msg = AP ActivePage  
+            |  SuccessLogin LoginResult
+            |  UpdateUserName String
+            |  UpdatePassword String
+            | StartLogin
 
 type alias Model =
   {
+    userInfo : UserInfo,
     loginResult: LoginResult,
     activeTab: ActivePage
   }
@@ -38,6 +43,12 @@ type alias LoginResult =
     isLoggedIn : Bool,
     address: String
   }
+
+type alias UserInfo =
+  {
+    userName : String,
+    password: String
+  }
      
 initdata : Model
 initdata = 
@@ -46,7 +57,10 @@ initdata =
       isLoggedIn = False,
       address = "-"
     },
-      
+      userInfo = {
+          userName = "no user",
+          password = "no password"
+      },
     activeTab = LoggedInPage  
     }
 
@@ -123,17 +137,17 @@ loginView model =
  div [ class "content" ]
                 [ div [ class "form" ]
                     [ div [ class "fields" ]
-                        [ input [ placeholder "Username" ]
+                        [ input [ placeholder "Username",  onInput UpdateUserName, value model.userInfo.userName ]
                             []
                         , div []
-                            [ input [ placeholder "Password", type_ "password" ]
+                            [ input [ placeholder "Password", type_ "password", onInput UpdatePassword, value model.userInfo.password  ]
                                 []
                             , p [ class "error" ]
                                 []
                             ]
                         ]
                     , div [ class "buttons" ]
-                        [ div [ class "button fullWidth",  onClick (AP LoggedInPage) ]
+                        [ div [ class "button fullWidth",  onClick StartLogin ]
                             [ text "Log In" ]
                         , div [ class "link", onClick (AP CreateAccountTab) ]
                             [ span []
@@ -149,14 +163,30 @@ update msg model =
     AP x  ->
        updatePage x  model
     SuccessLogin data ->
-        ({ model | loginResult = data }, Cmd.none)
+        case data.isLoggedIn of
+            True ->
+                ({ model | loginResult = data, activeTab = LoggedInPage  }, Cmd.none)
+            False ->
+                ({ model | loginResult = data   }, Cmd.none)
+    UpdatePassword pswd -> 
+         let
+            li =  model.userInfo
+        in
+            ({ model | userInfo = { li|  password = pswd} }, Cmd.none)
+    UpdateUserName usrname -> 
+        let
+            li =  model.userInfo
+        in
+            ({ model | userInfo = { li | userName = usrname} }, Cmd.none)
+    StartLogin ->
+       (model, loginUser  model.userInfo)
 
     
 updatePage : ActivePage -> Model -> ( Model, Cmd Msg )
 updatePage msg model =
  case msg of
     LoginTab ->
-        ({ model | activeTab = LoginTab }, loginUser  (E.string "Logging in..."))
+        ({ model | activeTab = LoginTab }, Cmd.none)
     LoggedInPage ->
         ({ model | activeTab = LoggedInPage }, Cmd.none)
     CreateAccountTab ->
@@ -181,7 +211,7 @@ signedInView model =
             , p []
                 [ text "Your wallet address is:" ]
             , p [ class "address" ]
-                [ text "0x3cce80e16f4d5634b237f5c1c338864af4d73674" ]
+                [ text model.loginResult.address ]
             , div [ class "button", onClick  (AP LoginTab ) ]
                 [ text "Log Out"  ]
             ]
@@ -199,10 +229,7 @@ view model =
     in
   div [ id "root" ]
       [ div [ class "app" ]
-        [ 
-            vw,
-            div[][text model.loginResult.address]
-        ] 
+        [ vw] 
       ]
       
 main = 
@@ -213,5 +240,5 @@ main =
     , subscriptions = subscriptions
   }
 
-port loginUser : E.Value -> Cmd msg
+port loginUser : UserInfo -> Cmd msg
 port loginResult : (LoginResult -> msg) -> Sub msg
