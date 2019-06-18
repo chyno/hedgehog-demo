@@ -95,7 +95,7 @@ createAccountView model =
                                 []
                             ]
                         ]
-                    , div [ class "buttons", onClick CreateAccountTab ]
+                    , div [ class "buttons", onClick LoginTab ]
                         [ div [ class "button fullWidth" ]
                             [ text "Create My Account" ]
                         , div [ class "link",  onClick LoginTab ]
