@@ -13,13 +13,23 @@
 <body>
   <div id="elm">
   </div>
-  
+  <div id="test"></div>
+  <button id="button" onclick="sendMessage()" >logged in</button>
   <script type="module">
+        
+       document.getElementById('test').innerText = 'startup...';
     let app = Elm.Main.init({
         flags: "Hello",
         node: document.getElementById('elm'),
         });
 
+        app.ports.loginUser.subscribe(function(data) {
+             document.getElementById('test').innerText = data;
+            });
+
+      document.getElementById("button").onclick = () => { 
+        app.ports.loginResult.send("you are logged in");
+      }
   //  import {getFn, setAuthFn, setUserFn} from './hedgehog.js';
   //   //import { getMessage } from './foo.js';
   //   let msg = 'none';
@@ -32,6 +42,7 @@
   //   alert(msg);
     
   </script>
+ 
 </body>
 
 

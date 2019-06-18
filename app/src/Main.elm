@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 
 import Browser
@@ -8,34 +8,36 @@ import Html exposing (p,
  div, input, text, 
  h1, hr,br, img, h3, 
  strong, span, button)
-
 import Html.Attributes exposing (..)
+import Json.Encode as E
 
 
 init : String ->  ( Model, Cmd Msg )
 init  flag =  (initdata, Cmd.none)  
 
 
-tabClassString : Model -> Msg -> String
+tabClassString : Model -> ActivePage -> String
 tabClassString model tab =
   if model.activeTab == tab then
     "tab active"
   else
     "tab"  
     
-type Msg =  CreateAccountTab | LoginTab | LoggedInPage
+type ActivePage =  CreateAccountTab  | LoginTab  | LoggedInPage 
+
+type Msg = AP ActivePage  |   SuccessLogin String
 
 type alias Model =
   {
     message: String,
-    activeTab: Msg
+    activeTab: ActivePage
   }
 
      
 initdata : Model
 initdata = 
     { 
-      message = "Looged in",
+      message = "init",
       activeTab = LoggedInPage  
     }
 
@@ -47,11 +49,11 @@ headersView model =
             [ div [ class "headers" ]
                 [ div [ class 
                 (tabClassString model CreateAccountTab),
-                onClick CreateAccountTab
+                onClick (AP CreateAccountTab)
                   ]
                     [ text "Create Account" ]
                 , div [ class (tabClassString model LoginTab),
-                        onClick LoginTab
+                        onClick (AP LoginTab)
                     ]
                     [ text "Log In" ]
                 ]
@@ -63,6 +65,7 @@ headersView model =
                    (loginView model)
                 LoggedInPage -> 
                      (loginView model)
+                
             
             ]
         , div [ class "message unauthenticated" ]
@@ -95,10 +98,10 @@ createAccountView model =
                                 []
                             ]
                         ]
-                    , div [ class "buttons", onClick LoginTab ]
+                    , div [ class "buttons", onClick (AP LoginTab) ]
                         [ div [ class "button fullWidth" ]
                             [ text "Create My Account" ]
-                        , div [ class "link",  onClick LoginTab ]
+                        , div [ class "link",  onClick (AP LoginTab) ]
                             [ span []
                                 [ text "I already have an account." ]
                             ]
@@ -121,9 +124,9 @@ loginView model =
                             ]
                         ]
                     , div [ class "buttons" ]
-                        [ div [ class "button fullWidth",  onClick LoggedInPage ]
+                        [ div [ class "button fullWidth",  onClick (AP LoggedInPage) ]
                             [ text "Log In" ]
-                        , div [ class "link", onClick CreateAccountTab ]
+                        , div [ class "link", onClick (AP CreateAccountTab) ]
                             [ span []
                                 [ text "Create Account" ]
                             ]
@@ -133,17 +136,27 @@ loginView model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-   case msg of
+ case msg of
+    AP x  ->
+       updatePage x  model
+    SuccessLogin data ->
+        ({ model | message = data }, Cmd.none)
+
+    
+updatePage : ActivePage -> Model -> ( Model, Cmd Msg )
+updatePage msg model =
+ case msg of
     LoginTab ->
-        ({ model | activeTab = LoginTab }, Cmd.none)
+        ({ model | activeTab = LoginTab }, loginUser  (E.string "Logging in..."))
     LoggedInPage ->
         ({ model | activeTab = LoggedInPage }, Cmd.none)
     CreateAccountTab ->
         ({ model | activeTab = CreateAccountTab }, Cmd.none)
-    
+   
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    loginResult SuccessLogin
 
  
 
@@ -160,22 +173,26 @@ signedInView model =
                 [ text "Your wallet address is:" ]
             , p [ class "address" ]
                 [ text "0x3cce80e16f4d5634b237f5c1c338864af4d73674" ]
-            , div [ class "button", onClick LoginTab  ]
+            , div [ class "button", onClick  (AP LoginTab ) ]
                 [ text "Log Out"  ]
             ]
 
 view : Model -> Html Msg
 view model =
-  div [ id "root" ]
-      [ div [ class "app" ]
-        [ 
-            case model.activeTab of
+    let
+        vw = case model.activeTab of
                 CreateAccountTab ->
                   headersView model
                 LoginTab  ->
                   headersView model
                 LoggedInPage -> 
                     signedInView model
+    in
+  div [ id "root" ]
+      [ div [ class "app" ]
+        [ 
+            vw,
+            div[][text model.message]
         ] 
       ]
       
@@ -186,3 +203,6 @@ main =
     , update = update
     , subscriptions = subscriptions
   }
+
+port loginUser : E.Value -> Cmd msg
+port loginResult : (String -> msg) -> Sub msg
