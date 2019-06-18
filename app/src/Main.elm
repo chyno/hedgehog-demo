@@ -51,10 +51,13 @@ headersView model =
         [ div [ class "tabs" ]
             [ div [ class "headers" ]
                 [ div [ class 
-                (tabClassString model CreateAccount)
+                (tabClassString model CreateAccount),
+                onClick DoCreateAccount
                   ]
                     [ text "Create Account" ]
-                , div [ class (tabClassString model Login) ]
+                , div [ class (tabClassString model Login),
+                        onClick DoLogIn
+                    ]
                     [ text "Log In" ]
                 ]
             ,
@@ -100,7 +103,7 @@ createAccountView model =
                     , div [ class "buttons" ]
                         [ div [ class "button fullWidth" ]
                             [ text "Create My Account" ]
-                        , div [ class "link" ]
+                        , div [ class "link",  onClick DoLogIn ]
                             [ span []
                                 [ text "I already have an account." ]
                             ]

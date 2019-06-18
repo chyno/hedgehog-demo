@@ -4822,6 +4822,8 @@ var author$project$Main$update = F2(
 					elm$core$Platform$Cmd$none);
 		}
 	});
+var author$project$Main$DoCreateAccount = {$: 'DoCreateAccount'};
+var author$project$Main$DoLogIn = {$: 'DoLogIn'};
 var elm$core$Basics$identity = function (x) {
 	return x;
 };
@@ -4857,6 +4859,23 @@ var elm$html$Html$Attributes$stringProperty = F2(
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
 var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
 var author$project$Main$createAccountView = function (model) {
 	return A2(
 		elm$html$Html$div,
@@ -4941,7 +4960,8 @@ var author$project$Main$createAccountView = function (model) {
 								elm$html$Html$div,
 								_List_fromArray(
 									[
-										elm$html$Html$Attributes$class('link')
+										elm$html$Html$Attributes$class('link'),
+										elm$html$Html$Events$onClick(author$project$Main$DoLogIn)
 									]),
 								_List_fromArray(
 									[
@@ -4956,25 +4976,6 @@ var author$project$Main$createAccountView = function (model) {
 							]))
 					]))
 			]));
-};
-var author$project$Main$DoCreateAccount = {$: 'DoCreateAccount'};
-var author$project$Main$DoLogIn = {$: 'DoLogIn'};
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
 };
 var author$project$Main$loginView = function (model) {
 	return A2(
@@ -5114,7 +5115,8 @@ var author$project$Main$headersView = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class(
-												A2(author$project$Main$tabClassString, model, author$project$Main$CreateAccount))
+												A2(author$project$Main$tabClassString, model, author$project$Main$CreateAccount)),
+												elm$html$Html$Events$onClick(author$project$Main$DoCreateAccount)
 											]),
 										_List_fromArray(
 											[
@@ -5125,7 +5127,8 @@ var author$project$Main$headersView = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class(
-												A2(author$project$Main$tabClassString, model, author$project$Main$Login))
+												A2(author$project$Main$tabClassString, model, author$project$Main$Login)),
+												elm$html$Html$Events$onClick(author$project$Main$DoLogIn)
 											]),
 										_List_fromArray(
 											[
