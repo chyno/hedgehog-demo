@@ -16,32 +16,27 @@ init : String ->  ( Model, Cmd Msg )
 init  flag =  (initdata, Cmd.none)  
 
 
-tabClassString : Model -> ActiveTab -> String
+tabClassString : Model -> Msg -> String
 tabClassString model tab =
   if model.activeTab == tab then
     "tab active"
   else
     "tab"  
     
-type ActiveTab =  CreateAccount | Login | LoggedIn
+type Msg =  CreateAccountTab | LoginTab | LoggedInPage
 
 type alias Model =
   {
     message: String,
-    activeTab: ActiveTab
+    activeTab: Msg
   }
 
-
-type Msg
-    =  DoLogout 
-       | DoLogIn  
-       | DoCreateAccount
-       
+     
 initdata : Model
 initdata = 
     { 
       message = "Looged in",
-      activeTab = LoggedIn  
+      activeTab = LoggedInPage  
     }
 
 headersView : Model -> Html Msg
@@ -51,22 +46,22 @@ headersView model =
         [ div [ class "tabs" ]
             [ div [ class "headers" ]
                 [ div [ class 
-                (tabClassString model CreateAccount),
-                onClick DoCreateAccount
+                (tabClassString model CreateAccountTab),
+                onClick CreateAccountTab
                   ]
                     [ text "Create Account" ]
-                , div [ class (tabClassString model Login),
-                        onClick DoLogIn
+                , div [ class (tabClassString model LoginTab),
+                        onClick LoginTab
                     ]
                     [ text "Log In" ]
                 ]
             ,
              case model.activeTab of
-                CreateAccount ->
+                CreateAccountTab ->
                    (createAccountView model)
-                Login  ->
+                LoginTab  ->
                    (loginView model)
-                LoggedIn -> 
+                LoggedInPage -> 
                      (loginView model)
             
             ]
@@ -100,10 +95,10 @@ createAccountView model =
                                 []
                             ]
                         ]
-                    , div [ class "buttons" ]
+                    , div [ class "buttons", onClick CreateAccountTab ]
                         [ div [ class "button fullWidth" ]
                             [ text "Create My Account" ]
-                        , div [ class "link",  onClick DoLogIn ]
+                        , div [ class "link",  onClick LoginTab ]
                             [ span []
                                 [ text "I already have an account." ]
                             ]
@@ -126,9 +121,9 @@ loginView model =
                             ]
                         ]
                     , div [ class "buttons" ]
-                        [ div [ class "button fullWidth",  onClick DoLogIn ]
+                        [ div [ class "button fullWidth",  onClick LoggedInPage ]
                             [ text "Log In" ]
-                        , div [ class "link", onClick DoCreateAccount ]
+                        , div [ class "link", onClick CreateAccountTab ]
                             [ span []
                                 [ text "Create Account" ]
                             ]
@@ -139,12 +134,12 @@ loginView model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
    case msg of
-    DoLogout ->
-        ({ model | activeTab = Login }, Cmd.none)
-    DoLogIn ->
-        ({ model | activeTab = LoggedIn }, Cmd.none)
-    DoCreateAccount ->
-        ({ model | activeTab = CreateAccount }, Cmd.none)
+    LoginTab ->
+        ({ model | activeTab = LoginTab }, Cmd.none)
+    LoggedInPage ->
+        ({ model | activeTab = LoggedInPage }, Cmd.none)
+    CreateAccountTab ->
+        ({ model | activeTab = CreateAccountTab }, Cmd.none)
     
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -165,7 +160,7 @@ signedInView model =
                 [ text "Your wallet address is:" ]
             , p [ class "address" ]
                 [ text "0x3cce80e16f4d5634b237f5c1c338864af4d73674" ]
-            , div [ class "button", onClick DoLogout  ]
+            , div [ class "button", onClick LoginTab  ]
                 [ text "Log Out"  ]
             ]
 
@@ -175,11 +170,11 @@ view model =
       [ div [ class "app" ]
         [ 
             case model.activeTab of
-                CreateAccount ->
+                CreateAccountTab ->
                   headersView model
-                Login  ->
+                LoginTab  ->
                   headersView model
-                LoggedIn -> 
+                LoggedInPage -> 
                     signedInView model
         ] 
       ]
