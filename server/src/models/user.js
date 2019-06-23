@@ -1,5 +1,4 @@
-'use strict';
-
+'use strict'
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     id: {
@@ -27,5 +26,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   })
 
-  return User;
+  return User
 }

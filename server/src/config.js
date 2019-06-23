@@ -1,6 +1,6 @@
-const nconf = require('nconf');
+const nconf = require('nconf')
 
-nconf.env();
-nconf.file('defaults', 'default-config.json');
+nconf.env()
+nconf.file('defaults', 'default-config.json')
 
-module.exports = nconf;
+module.exports = nconf
