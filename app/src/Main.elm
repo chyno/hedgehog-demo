@@ -1,4 +1,6 @@
-module Main exposing (main)
+port module Main exposing (main)
+
+
 import Browser
 import Html.Events exposing (onInput, onClick)
 import Html exposing (p,
@@ -6,91 +8,88 @@ import Html exposing (p,
  div, input, text, 
  h1, hr,br, img, h3, 
  strong, span, button)
-
 import Html.Attributes exposing (..)
+import Json.Encode as E
 
-type ActiveTab =  CreateAccount | Login | LoggedIn
-
-
-type alias Model =
-  {
-    message: String,
-    activeTab: ActiveTab
-  }
-
-initdata : Model
-initdata = 
-    { 
-      message = "Looged in",
-      activeTab = LoggedIn  
-    }
 
 init : String ->  ( Model, Cmd Msg )
 init  flag =  (initdata, Cmd.none)  
 
-type Msg
-    =  DoLogout 
-       | DoLogIn  
-       |DoCreateAccount
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-   case msg of
-    DoLogout ->
-        ({ model | activeTab = Login }, Cmd.none)
-    DoLogIn ->
-        ({ model | activeTab = LoggedIn }, Cmd.none)
-    DoCreateAccount ->
-        ({ model | activeTab = CreateAccount }, Cmd.none)
-    
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
-
-tabClassString : Model -> ActiveTab -> String
+tabClassString : Model -> ActivePage -> String
 tabClassString model tab =
   if model.activeTab == tab then
     "tab active"
   else
-    "tab"   
+    "tab"  
+    
+type ActivePage =  CreateAccountTab  | LoginTab  | LoggedInPage 
 
-foo : Model -> Html Msg
-foo model =
+type Msg = AP ActivePage  
+            |  SuccessLogin LoginResult
+            |  UpdateUserName String
+            |  UpdatePassword String
+            | StartLogin
+
+type alias Model =
+  {
+    userInfo : UserInfo,
+    loginResult: LoginResult,
+    activeTab: ActivePage
+  }
+
+type alias LoginResult =
+  {
+    isLoggedIn : Bool,
+    address: String
+  }
+
+type alias UserInfo =
+  {
+    userName : String,
+    password: String
+  }
+     
+initdata : Model
+initdata = 
+    { 
+    loginResult = {
+      isLoggedIn = False,
+      address = "-"
+    },
+      userInfo = {
+          userName = "no user",
+          password = "no password"
+      },
+    activeTab = LoggedInPage  
+    }
+
+headersView : Model -> Html Msg
+headersView model =
   div [ id "root" ]
     [ div [ class "app" ]
         [ div [ class "tabs" ]
             [ div [ class "headers" ]
                 [ div [ class 
-                (tabClassString model CreateAccount)
+                (tabClassString model CreateAccountTab),
+                onClick (AP CreateAccountTab)
                   ]
                     [ text "Create Account" ]
-                , div [ class (tabClassString model Login) ]
+                , div [ class (tabClassString model LoginTab),
+                        onClick (AP LoginTab)
+                    ]
                     [ text "Log In" ]
                 ]
-            , div [ class "content" ]
-                [ div [ class "form" ]
-                    [ div [ class "fields" ]
-                        [ input [ placeholder "Username" ]
-                            []
-                        , input [ placeholder "Password", type_ "password" ]
-                            []
-                        , div []
-                            [ input [ placeholder "Confirm Password", type_ "password" ]
-                                []
-                            , p [ class "error" ]
-                                []
-                            ]
-                        ]
-                    , div [ class "buttons" ]
-                        [ div [ class "button fullWidth" ]
-                            [ text "Create My Account" ]
-                        , div [ class "link" ]
-                            [ span []
-                                [ text "I already have an account." ]
-                            ]
-                        ]
-                    ]
-                ]
+            ,
+             case model.activeTab of
+                CreateAccountTab ->
+                   (createAccountView model)
+                LoginTab  ->
+                   (loginView model)
+                LoggedInPage -> 
+                     (loginView model)
+                
+            
             ]
         , div [ class "message unauthenticated" ]
             [ div [ class "pill red" ]
@@ -105,35 +104,100 @@ foo model =
         ]
     ]
 
+
 createAccountView: Model -> Html Msg
-createAccountView model =
- div [][text "create account"]
+createAccountView model = 
+     div [ class "content" ]
+                [ div [ class "form" ]
+                    [ div [ class "fields" ]
+                        [ input [ placeholder "Username" ]
+                            []
+                        , input [ placeholder "Password", type_ "password" ]
+                            []
+                        , div []
+                            [ input [ placeholder "Confirm Password", type_ "password" ]
+                                []
+                            , p [ class "error" ]
+                                []
+                            ]
+                        ]
+                    , div [ class "buttons", onClick (AP LoginTab) ]
+                        [ div [ class "button fullWidth" ]
+                            [ text "Create My Account" ]
+                        , div [ class "link",  onClick (AP LoginTab) ]
+                            [ span []
+                                [ text "I already have an account." ]
+                            ]
+                        ]
+                    ]
+                ]
 
 loginView : Model -> Html Msg
 loginView model =
  div [ class "content" ]
                 [ div [ class "form" ]
                     [ div [ class "fields" ]
-                        [ input [ placeholder "Username" ]
+                        [ input [ placeholder "Username",  onInput UpdateUserName, value model.userInfo.userName ]
                             []
                         , div []
-                            [ input [ placeholder "Password", type_ "password" ]
+                            [ input [ placeholder "Password", type_ "password", onInput UpdatePassword, value model.userInfo.password  ]
                                 []
                             , p [ class "error" ]
                                 []
                             ]
                         ]
                     , div [ class "buttons" ]
-                        [ div [ class "button fullWidth",  onClick DoLogIn ]
+                        [ div [ class "button fullWidth",  onClick StartLogin ]
                             [ text "Log In" ]
-                        , div [ class "link", onClick DoCreateAccount ]
+                        , div [ class "link", onClick (AP CreateAccountTab) ]
                             [ span []
                                 [ text "Create Account" ]
                             ]
                         ]
                     ]
                 ]
-            
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+ case msg of
+    AP x  ->
+       updatePage x  model
+    SuccessLogin data ->
+        case data.isLoggedIn of
+            True ->
+                ({ model | loginResult = data, activeTab = LoggedInPage  }, Cmd.none)
+            False ->
+                ({ model | loginResult = data   }, Cmd.none)
+    UpdatePassword pswd -> 
+         let
+            li =  model.userInfo
+        in
+            ({ model | userInfo = { li|  password = pswd} }, Cmd.none)
+    UpdateUserName usrname -> 
+        let
+            li =  model.userInfo
+        in
+            ({ model | userInfo = { li | userName = usrname} }, Cmd.none)
+    StartLogin ->
+       (model, loginUser  model.userInfo)
+
+    
+updatePage : ActivePage -> Model -> ( Model, Cmd Msg )
+updatePage msg model =
+ case msg of
+    LoginTab ->
+        ({ model | activeTab = LoginTab }, Cmd.none)
+    LoggedInPage ->
+        ({ model | activeTab = LoggedInPage }, Cmd.none)
+    CreateAccountTab ->
+        ({ model | activeTab = CreateAccountTab }, Cmd.none)
+   
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    loginResult SuccessLogin
+
+ 
 
 signedInView : Model -> Html Msg
 signedInView model = 
@@ -147,24 +211,25 @@ signedInView model =
             , p []
                 [ text "Your wallet address is:" ]
             , p [ class "address" ]
-                [ text "0x3cce80e16f4d5634b237f5c1c338864af4d73674" ]
-            , div [ class "button", onClick DoLogout  ]
+                [ text model.loginResult.address ]
+            , div [ class "button", onClick  (AP LoginTab ) ]
                 [ text "Log Out"  ]
             ]
 
 view : Model -> Html Msg
 view model =
+    let
+        vw = case model.activeTab of
+                CreateAccountTab ->
+                  headersView model
+                LoginTab  ->
+                  headersView model
+                LoggedInPage -> 
+                    signedInView model
+    in
   div [ id "root" ]
       [ div [ class "app" ]
-        [ 
-            case model.activeTab of
-                CreateAccount ->
-                  createAccountView model
-                Login  ->
-                  loginView model
-                LoggedIn -> 
-                    signedInView model
-                  ] 
+        [ vw] 
       ]
       
 main = 
@@ -174,3 +239,6 @@ main =
     , update = update
     , subscriptions = subscriptions
   }
+
+port loginUser : UserInfo -> Cmd msg
+port loginResult : (LoginResult -> msg) -> Sub msg

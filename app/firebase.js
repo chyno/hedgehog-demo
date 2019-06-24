@@ -1,14 +1,6 @@
-class Firebase {
+export class Firebase {
   constructor() {
-    // var config = {
-    //   apiKey: "AIzaSyBM_bvGpHJeA3Wn5xeQMKNiQi5mkCNaS7E",
-    //   authDomain: "hedgehog-dev-30d41.firebaseapp.com",
-    //   databaseURL: "https://hedgehog-dev-30d41.firebaseio.com",
-    //   projectId: "hedgehog-dev-30d41",
-    //   storageBucket: "hedgehog-dev-30d41.appspot.com",
-    //   messagingSenderId: "247267429112"
-    // };
-
+     
     var config = {
       apiKey: "AIzaSyABtuHG_Z04vvJ3qH7BC5FsxiJoDiQxXK8",
       authDomain: "hedgehoge-demo.firebaseapp.com",
@@ -64,4 +56,3 @@ class Firebase {
   }
 }
 
-window.Firebase = Firebase;

@@ -1,46 +1,70 @@
 <!DOCTYPE html>
-<html lang='en'>
-<head>
-    <script src="./hedgehog.js"></script>
+<html lang="en">
+  <head>
+    <!-- <script src="./hedgehog.js"></script>
+    <script src="./firebase.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-app.js"></script>
+
+	<!-- Add Firebase products that you want to use -->
+	<script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-firestore.js"></script>
     <script src="./dist/elmapp.js"></script>
-   <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-  <script src="./browser.js" type="text/javascript"></script> 
-  <link rel='stylesheet' type='text/css' href='./style.css' />
-  <meta content="width=device-width, initial-scale=1" name="viewport" />
-   
-</head>
-<body>
-  <div id="elm">
-  </div>
-  
-  <script type="module">
-    let app = Elm.Main.init({
+    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script src="./browser.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+  </head>
+  <body>
+    <div id="elm"></div>
+
+    <script async  type="module">
+      import { hedgehog } from "./hedgehog.js";
+
+       console.log('Hedge hog object - ' + hedgehog);
+
+      //  document.getElementById('test').innerText = 'startup...';
+      let app = Elm.Main.init({
         flags: "Hello",
-        node: document.getElementById('elm'),
+        node: document.getElementById("elm")
+      });
+
+      app.ports.loginUser.subscribe(function(data) {
+        //document.getElementById('test').innerText = JSON.stringify(data);
+         hedgehog
+         .login(data.userName, data.password)
+         .then(() => {
+            app.ports.loginResult.send({
+            address: hedgehog.getWallet().getAddressString(),
+            isLoggedIn: isLoggedIn()
         });
+         });  
+      });
 
-      const firebase = new Firebase();
-      const setAuthFn = async obj =>
-      firebase.createIfNotExists(AUTH_TABLE, obj.lookupKey, obj);
-      const setUserFn = async obj =>
-      firebase.createIfNotExists(USER_TABLE, obj.username, obj);
-      const getFn = async obj => firebase.readRecordFromFirebase(AUTH_TABLE, obj);
-    const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
-
-  //  import {getFn, setAuthFn, setUserFn} from './hedgehog.js';
-  //   //import { getMessage } from './foo.js';
-  //   let msg = 'none';
-  //   try {
-  //     const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
-  //     msg = JSON.stringify(hedgehog);
-  //   } catch (err) {
-  //    msg = err;
-  //   }
-  //   alert(msg);
-    
-  </script>
-</body>
-
-
+      //   document.getElementById("button").onclick = () => {
+      //     app.ports.loginResult.send({address: "aaadddd", isLoggedIn: true});
+      //   }
+      //  import {getFn, setAuthFn, setUserFn} from './hedgehog.js';
+      //   //import { getMessage } from './foo.js';
+      //   let msg = 'none';
+      //   try {
+      //     const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
+      //     msg = JSON.stringify(hedgehog);
+      //   } catch (err) {
+      //    msg = err;
+      //   }
+      //   alert(msg);
+      function isLoggedIn() {
+        if (hedgehog.isLoggedIn()) {
+        return true;
+    } else {
+      
+      return  hedgehog &&
+        hedgehog.walletExistsLocally &&
+        hedgehog.walletExistsLocally()
+      
+      }
+    }
+    </script>
+  </body>
 </html>
