@@ -5,9 +5,9 @@
     <script src="./firebase.js"></script> -->
     <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-app.js"></script>
 
-	<!-- Add Firebase products that you want to use -->
-	<script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-database.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-firestore.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-firestore.js"></script>
     <script src="./dist/elmapp.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
@@ -18,53 +18,45 @@
   <body>
     <div id="elm"></div>
 
-    <script async  type="module">
+    <script async type="module">
       import { hedgehog } from "./hedgehog.js";
-
-       console.log('Hedge hog object - ' + hedgehog);
-
-      //  document.getElementById('test').innerText = 'startup...';
-      let app = Elm.Main.init({
-        flags: "Hello",
-        node: document.getElementById("elm")
-      });
-
-      app.ports.loginUser.subscribe(function(data) {
-        //document.getElementById('test').innerText = JSON.stringify(data);
-         hedgehog
-         .login(data.userName, data.password)
-         .then(() => {
-            app.ports.loginResult.send({
-            address: hedgehog.getWallet().getAddressString(),
-            isLoggedIn: isLoggedIn()
+        
+        let app = Elm.Main.init({
+          flags: "Hello",
+          node: document.getElementById("elm")
         });
-         });  
-      });
-
-      //   document.getElementById("button").onclick = () => {
-      //     app.ports.loginResult.send({address: "aaadddd", isLoggedIn: true});
-      //   }
-      //  import {getFn, setAuthFn, setUserFn} from './hedgehog.js';
-      //   //import { getMessage } from './foo.js';
-      //   let msg = 'none';
-      //   try {
-      //     const hedgehog = new Hedgehog(getFn, setAuthFn, setUserFn);
-      //     msg = JSON.stringify(hedgehog);
-      //   } catch (err) {
-      //    msg = err;
-      //   }
-      //   alert(msg);
-      function isLoggedIn() {
-        if (hedgehog.isLoggedIn()) {
-        return true;
-    } else {
-      
-      return  hedgehog &&
-        hedgehog.walletExistsLocally &&
-        hedgehog.walletExistsLocally()
-      
-      }
-    }
+  
+        app.ports.loginUser.subscribe(function(data) {
+          hedgehog
+             .login(data.userName, data.password)
+             .then(
+               () => {
+                  app.ports.loginResult.send({
+                  address: hedgehog.getWallet().getAddressString(),
+                  isLoggedIn: isLoggedIn(),
+                  message: 'Success'});
+                }
+              ,(e) => {
+                app.ports
+                .loginResult
+                .send({
+                  address: '',
+                  isLoggedIn: false,
+                  message: e.message
+                });
+              });
+  
+        app.ports.logoutUser.subscribe(function() { hedgehog.logout(); });
+  
+        function isLoggedIn() {
+            if (hedgehog.isLoggedIn()) {
+              return true;
+            } else {
+              return  hedgehog &&
+                      hedgehog.walletExistsLocally &&
+                      hedgehog.walletExistsLocally();
+            }
+          }
     </script>
   </body>
 </html>

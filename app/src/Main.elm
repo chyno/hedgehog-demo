@@ -41,7 +41,8 @@ type alias Model =
 type alias LoginResult =
   {
     isLoggedIn : Bool,
-    address: String
+    address: String,
+    message: String
   }
 
 type alias UserInfo =
@@ -55,13 +56,14 @@ initdata =
     { 
     loginResult = {
       isLoggedIn = False,
-      address = "-"
+      address = "-",
+      message = ""
     },
       userInfo = {
           userName = "no user",
           password = "no password"
       },
-    activeTab = LoggedInPage  
+    activeTab = LoginTab  
     }
 
 headersView : Model -> Html Msg
@@ -229,7 +231,8 @@ view model =
     in
   div [ id "root" ]
       [ div [ class "app" ]
-        [ vw] 
+        [vw],
+        div [][text model.loginResult.message] 
       ]
       
 main = 
