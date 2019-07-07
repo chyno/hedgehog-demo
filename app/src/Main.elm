@@ -26,10 +26,13 @@ tabClassString model tab =
 type ActivePage =  CreateAccountTab  | LoginTab  | LoggedInPage 
 
 type Msg = AP ActivePage  
-            |  SuccessLogin LoginResult
-            |  UpdateUserName String
-            |  UpdatePassword String
-            | StartLogin
+            |   SuccessLogin LoginResult
+            |   UpdateUserName String
+            |   UpdatePassword String
+            |   UpdateNewPassword String
+            |   UpdateNewConfirmPassword String
+            |   StartLogin
+            |   RegisterUser
 
 type alias Model =
   {
@@ -45,10 +48,13 @@ type alias LoginResult =
     message: String
   }
 
+
+
 type alias UserInfo =
   {
     userName : String,
-    password: String
+    password: String,
+    passwordConfimation: String
   }
      
 initdata : Model
@@ -60,9 +66,11 @@ initdata =
       message = ""
     },
       userInfo = {
-          userName = "no user",
-          password = "no password"
+          userName = "",
+          password = "", 
+          passwordConfimation = ""
       },
+     
     activeTab = LoginTab  
     }
 
@@ -112,18 +120,18 @@ createAccountView model =
      div [ class "content" ]
                 [ div [ class "form" ]
                     [ div [ class "fields" ]
-                        [ input [ placeholder "Username" ]
+                        [ input [ placeholder "Username",  onInput UpdateUserName, value model.userInfo.userName ]
                             []
-                        , input [ placeholder "Password", type_ "password" ]
+                        , input [ placeholder "Password", type_ "password", onInput UpdateNewPassword, value model.userInfo.password ]
                             []
                         , div []
-                            [ input [ placeholder "Confirm Password", type_ "password" ]
+                            [ input [ placeholder "Confirm Password", type_ "password", onInput UpdateNewConfirmPassword, value model.userInfo.passwordConfimation ]
                                 []
                             , p [ class "error" ]
                                 []
                             ]
                         ]
-                    , div [ class "buttons", onClick (AP LoginTab) ]
+                    , div [ class "buttons", onClick  RegisterUser ]
                         [ div [ class "button fullWidth" ]
                             [ text "Create My Account" ]
                         , div [ class "link",  onClick (AP LoginTab) ]
@@ -170,7 +178,18 @@ update msg model =
                 ({ model | loginResult = data, activeTab = LoggedInPage  }, Cmd.none)
             False ->
                 ({ model | loginResult = data   }, Cmd.none)
+    
+    UpdateNewConfirmPassword pswd ->
+        let
+            li =  model.userInfo
+        in
+            ({ model | userInfo = { li |  passwordConfimation = pswd} }, Cmd.none)
     UpdatePassword pswd -> 
+         let
+            li =  model.userInfo
+        in
+            ({ model | userInfo = { li|  password = pswd} }, Cmd.none)
+    UpdateNewPassword pswd -> 
          let
             li =  model.userInfo
         in
@@ -180,19 +199,36 @@ update msg model =
             li =  model.userInfo
         in
             ({ model | userInfo = { li | userName = usrname} }, Cmd.none)
+   
     StartLogin ->
        (model, loginUser  model.userInfo)
+    RegisterUser  ->
+      (model, registerUser model.userInfo )
 
     
 updatePage : ActivePage -> Model -> ( Model, Cmd Msg )
 updatePage msg model =
  case msg of
     LoginTab ->
-        ({ model | activeTab = LoginTab }, Cmd.none)
+        ({ model | 
+                activeTab = LoginTab, 
+                userInfo = {
+                    userName = "",
+                    password = "", 
+                    passwordConfimation = ""
+                } 
+        }, Cmd.none)
     LoggedInPage ->
         ({ model | activeTab = LoggedInPage }, Cmd.none)
     CreateAccountTab ->
-        ({ model | activeTab = CreateAccountTab }, Cmd.none)
+        ({ model | 
+        activeTab = CreateAccountTab,
+        userInfo = {
+                    userName = "",
+                    password = "", 
+                    passwordConfimation = ""
+                }
+         }, Cmd.none)
    
 
 subscriptions : Model -> Sub Msg
@@ -243,5 +279,6 @@ main =
     , subscriptions = subscriptions
   }
 
+port registerUser : UserInfo-> Cmd msg 
 port loginUser : UserInfo -> Cmd msg
 port loginResult : (LoginResult -> msg) -> Sub msg
