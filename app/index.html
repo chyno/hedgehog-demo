@@ -47,11 +47,16 @@
         });
     });  
     
-    // app.ports.logoutUser.subscribe(function() { hedgehog.logout(); });
+     app.ports.logoutUser.subscribe(function() { 
+       hedgehog.logout();
+       console.log('user logged out');
+       app.ports.loginResult.send({
+            address: '',
+            isLoggedIn: false,
+            message: 'User Logged out'});
+      });
     app.ports.registerUser.subscribe(function(data) { 
-      console.log('in javascriupt registering a user');
       hedgehog.logout();
-      console.log(`###### user name: ${data.userName}, password:  ${data.password}`);
       hedgehog.signUp(data.userName, data.password)
       .then(
           () => {

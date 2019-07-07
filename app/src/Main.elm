@@ -32,6 +32,7 @@ type Msg = AP ActivePage
             |   UpdateNewPassword String
             |   UpdateNewConfirmPassword String
             |   StartLogin
+            |   Logout
             |   RegisterUser
 
 type alias Model =
@@ -202,6 +203,8 @@ update msg model =
    
     StartLogin ->
        (model, loginUser  model.userInfo)
+    Logout ->
+       (model, logoutUser  model.userInfo)
     RegisterUser  ->
       (model, registerUser model.userInfo )
 
@@ -281,4 +284,5 @@ main =
 
 port registerUser : UserInfo-> Cmd msg 
 port loginUser : UserInfo -> Cmd msg
+port logoutUser : UserInfo -> Cmd msg
 port loginResult : (LoginResult -> msg) -> Sub msg
