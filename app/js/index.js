@@ -6,27 +6,29 @@ let app = Elm.Main.init({
 });
 
 app.ports.loginUser.subscribe(function(data) {
-  app.ports.loginResult.send({
-    address: "12345",
-    isLoggedIn: true,
-    message: 'success'
-  });
-  // hedgehog.login(data.userName, data.password).then(
-  //   () => {
-  //     app.ports.loginResult.send({
-  //       address: hedgehog.getWallet().getAddressString(),
-  //       isLoggedIn: isLoggedIn(),
-  //       message: "Success"
-  //     });
-  //   },
-  //   e => {
-  //     app.ports.loginResult.send({
-  //       address: "",
-  //       isLoggedIn: false,
-  //       message: e.message
-  //     });
-  //   }
-  // );
+  // For testing
+  // app.ports.loginResult.send({
+  //   address: "12345",
+  //   isLoggedIn: false,
+  //   message: 'fail'
+  // });
+
+  hedgehog.login(data.userName, data.password).then(
+    () => {
+      app.ports.loginResult.send({
+        address: hedgehog.getWallet().getAddressString(),
+        isLoggedIn: isLoggedIn(),
+        message: "Success"
+      });
+    },
+    e => {
+      app.ports.loginResult.send({
+        address: "",
+        isLoggedIn: false,
+        message: e.message
+      });
+    }
+  );
 });
 
 app.ports.logoutUser.subscribe(function() {
