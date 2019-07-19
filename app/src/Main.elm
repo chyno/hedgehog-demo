@@ -85,7 +85,14 @@ initdata =
 
 adaptionView : Model -> Html Msg
 adaptionView model = 
-    div [][text "adaption"]
+    div [][
+            p [][ text "Your wallet address is:" ]
+            , p [ class "address" ]
+                [ text model.loginResult.address ]
+            , div [ class "button", onClick  (TabNavigate LoggingInTab ) ]
+                [ text "Log Out"  ]
+
+    ]
 
 headersView : Model -> Html Msg
 headersView model =
@@ -226,7 +233,7 @@ update msg model =
                  }
         }, loginUser  model.userInfo)
     Logout ->
-       (model, logoutUser  model.userInfo)
+       ( initdata, logoutUser  model.userInfo)
     RegisterUser  ->
       (model, registerUser model.userInfo )
 
@@ -277,12 +284,7 @@ signedInView model =
                 [ text "You're Signed In!" ]
             , p []
                 [ text "You just created an account using Hedgehog! Now, if you log out you will be able to sign back in with the same credentials." ]
-            , p []
-                [ text "Your wallet address is:" ]
-            , p [ class "address" ]
-                [ text model.loginResult.address ]
-            , div [ class "button", onClick  (TabNavigate LoggingInTab ) ]
-                [ text "Log Out"  ]
+            
             ]
 
 tabView : Model -> Html Msg
