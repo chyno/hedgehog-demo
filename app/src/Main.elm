@@ -16,16 +16,22 @@ init : String ->  ( Model, Cmd Msg )
 init  flag =  (initdata, Cmd.none)  
 
 
-tabClassString : Model -> ActivePage -> String
+tabClassString : Model -> ActiveLoginTab -> String
 tabClassString model tab =
   if model.activeTab == tab then
     "tab active"
   else
     "tab"  
-    
-type ActivePage =  CreateAccountTab  | LoginTab  | LoggedInPage 
 
-type Msg = AP ActivePage  
+type ActiveLoginTab =  CreateAccountTab
+                       | LoggingInTab
+                       | LoggedInTab
+
+type ActivePage =  LoginPage  
+                   | AdaptionPage 
+
+type Msg = PageNavigate ActivePage
+            | TabNavigate ActiveLoginTab
             |   SuccessLogin LoginResult
             |   UpdateUserName String
             |   UpdatePassword String
@@ -39,7 +45,8 @@ type alias Model =
   {
     userInfo : UserInfo,
     loginResult: LoginResult,
-    activeTab: ActivePage
+    activeTab: ActiveLoginTab,
+    activePage: ActivePage
   }
 
 type alias LoginResult =
@@ -72,8 +79,13 @@ initdata =
           passwordConfimation = ""
       },
      
-    activeTab = LoginTab  
+    activeTab = LoggingInTab,
+    activePage = LoginPage  
     }
+
+adaptionView : Model -> Html Msg
+adaptionView model = 
+    div [][text "adaption"]
 
 headersView : Model -> Html Msg
 headersView model =
@@ -83,11 +95,11 @@ headersView model =
             [ div [ class "headers" ]
                 [ div [ class 
                 (tabClassString model CreateAccountTab),
-                onClick (AP CreateAccountTab)
+                onClick (TabNavigate CreateAccountTab)
                   ]
                     [ text "Create Account" ]
-                , div [ class (tabClassString model LoginTab),
-                        onClick (AP LoginTab)
+                , div [ class (tabClassString model LoggingInTab),
+                        onClick (TabNavigate LoggingInTab)
                     ]
                     [ text "Log In" ]
                 ]
@@ -95,11 +107,11 @@ headersView model =
              case model.activeTab of
                 CreateAccountTab ->
                    (createAccountView model)
-                LoginTab  ->
+                LoggingInTab  ->
                    (loginView model)
-                LoggedInPage -> 
+                LoggedInTab -> 
                      (loginView model)
-                
+                 
             
             ]
         , div [ class "message unauthenticated" ]
@@ -135,7 +147,7 @@ createAccountView model =
                     , div [ class "buttons", onClick  RegisterUser ]
                         [ div [ class "button fullWidth" ]
                             [ text "Create My Account" ]
-                        , div [ class "link",  onClick (AP LoginTab) ]
+                        , div [ class "link",  onClick (TabNavigate LoggingInTab) ]
                             [ span []
                                 [ text "I already have an account." ]
                             ]
@@ -160,7 +172,7 @@ loginView model =
                     , div [ class "buttons" ]
                         [ div [ class "button fullWidth",  onClick StartLogin ]
                             [ text "Log In" ]
-                        , div [ class "link", onClick (AP CreateAccountTab) ]
+                        , div [ class "link", onClick (TabNavigate CreateAccountTab) ]
                             [ span []
                                 [ text "Create Account" ]
                             ]
@@ -171,12 +183,16 @@ loginView model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
  case msg of
-    AP x  ->
+    TabNavigate x ->
+      updateTab x model
+    PageNavigate x  ->
        updatePage x  model
     SuccessLogin data ->
         case data.isLoggedIn of
             True ->
-                ({ model | loginResult = data, activeTab = LoggedInPage  }, Cmd.none)
+                ({ model | loginResult = data, 
+                activeTab = LoggedInTab, 
+                activePage = AdaptionPage   }, Cmd.none)
             False ->
                 ({ model | loginResult = data   }, Cmd.none)
     
@@ -202,27 +218,38 @@ update msg model =
             ({ model | userInfo = { li | userName = usrname} }, Cmd.none)
    
     StartLogin ->
-       (model, loginUser  model.userInfo)
+       ({model |
+       loginResult = {
+                    isLoggedIn = False
+                    , address = "-"
+                    , message = "" 
+                 }
+        }, loginUser  model.userInfo)
     Logout ->
        (model, logoutUser  model.userInfo)
     RegisterUser  ->
       (model, registerUser model.userInfo )
 
-    
-updatePage : ActivePage -> Model -> ( Model, Cmd Msg )
-updatePage msg model =
+-- type ActivePage =  LoginPage  
+--                    | AdaptionPage 
+updatePage : ActivePage -> Model -> ( Model, Cmd Msg )  
+updatePage msg model = 
+    ({ model | activePage = msg }, Cmd.none)
+
+updateTab : ActiveLoginTab -> Model -> ( Model, Cmd Msg )
+updateTab msg model =
  case msg of
-    LoginTab ->
+    LoggingInTab ->
         ({ model | 
-                activeTab = LoginTab, 
+                activeTab = LoggingInTab, 
                 userInfo = {
                     userName = "",
                     password = "", 
                     passwordConfimation = ""
                 } 
         }, Cmd.none)
-    LoggedInPage ->
-        ({ model | activeTab = LoggedInPage }, Cmd.none)
+    LoggedInTab ->
+        ({ model | activeTab = LoggedInTab }, Cmd.none)
     CreateAccountTab ->
         ({ model | 
         activeTab = CreateAccountTab,
@@ -232,6 +259,7 @@ updatePage msg model =
                     passwordConfimation = ""
                 }
          }, Cmd.none)
+
    
 
 subscriptions : Model -> Sub Msg
@@ -253,25 +281,38 @@ signedInView model =
                 [ text "Your wallet address is:" ]
             , p [ class "address" ]
                 [ text model.loginResult.address ]
-            , div [ class "button", onClick  (AP LoginTab ) ]
+            , div [ class "button", onClick  (TabNavigate LoggingInTab ) ]
                 [ text "Log Out"  ]
             ]
 
-view : Model -> Html Msg
-view model =
+tabView : Model -> Html Msg
+tabView model =
     let
         vw = case model.activeTab of
                 CreateAccountTab ->
                   headersView model
-                LoginTab  ->
+                LoggingInTab  ->
                   headersView model
-                LoggedInPage -> 
+                LoggedInTab -> 
                     signedInView model
+    in
+  div []
+      [vw
+        ,div [][text model.loginResult.message] 
+      ]
+
+view : Model -> Html Msg
+view model =
+    let
+        vw = case model.activePage of
+                LoginPage   ->
+                  tabView model
+                AdaptionPage   ->
+                  adaptionView model        
     in
   div [ id "root" ]
       [ div [ class "app" ]
-        [vw],
-        div [][text model.loginResult.message] 
+            [vw]       
       ]
       
 main = 
