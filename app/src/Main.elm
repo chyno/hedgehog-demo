@@ -89,7 +89,7 @@ adaptionView model =
             p [][ text "Your wallet address is:" ]
             , p [ class "address" ]
                 [ text model.loginResult.address ]
-            , div [ class "button", onClick  (TabNavigate LoggingInTab ) ]
+            , div [ class "button", onClick  (PageNavigate LoginPage   ) ]
                 [ text "Log Out"  ]
 
     ]
@@ -190,10 +190,10 @@ loginView model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
  case msg of
-    TabNavigate x ->
-      updateTab x model
-    PageNavigate x  ->
-       updatePage x  model
+    TabNavigate tab ->
+      updateTab tab model
+    PageNavigate page  ->
+       updatePage page  model
     SuccessLogin data ->
         case data.isLoggedIn of
             True ->
