@@ -4,20 +4,22 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-          
-       {
+        
+        {
             "type": "node",
             "request": "launch",
             "name": "Mocha Tests",
-            "program": "${workspaceRoot}/app/node_modules/mocha/bin/mocha",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
-                "--inspect-brk",
-                "${workspaceFolder}/app/test/**/*.js"
+                "-u",
+                "bdd",
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/test"
             ],
-            "port": 9229,
             "internalConsoleOptions": "openOnSessionStart"
-            
-        },
-        
+        }
+       
     ]
 }
