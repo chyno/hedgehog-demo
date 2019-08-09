@@ -66,45 +66,47 @@ describe("web3 and hedgehog", function() {
   });
 
   xit("Can login to hedge hog", async function() {
-    let wallet;
-    var engine = new ProviderEngine();
-    wallet = await hedgehog.signUp(userName, password);
-
-    if (!hedgehog.isLoggedIn()) {
-      wallet = await hedgehog.login(userName, password);
-    }
-    //await hedgehog.signUp(userName + "1", password + "1");
-    if (!wallet) {
-      wallet = hedgehog.getWallet();
-    }
-
-    //const prov = new Web3.providers.HttpProvider("http://localhost:8545");
-    engine.addProvider(new WalletSubprovider(wallet));
-    //engine.addProvider(prov);
-    // data source
-    engine.addProvider(
-      new RpcSubprovider({
-        rpcUrl: "https://localhost:8545"
-      })
-    );
-    engine.start();
-    engine.amountToSend(
-
-    )
+   
     assert.ok(wallet, "problem logging into hedge hog");
   });
 
-  xit("can crete web3", async () => {
+  it("Can send ether using hedgehog wallet", async () => {
     const prov = new Web3.providers.HttpProvider("http://localhost:8545");
     const web3 = new Web3(prov);
     const eth = web3.eth;
     let accounts = await eth.getAccounts();
-   
-    //console.log(accounts);
-    assert.ok(accounts.length > 1, "has accounts");
+    const wallet = await utils.getNewWallet(hedgehog, 'jchynoweth', 'password12345');
+    const publicKeyAddress = wallet.getAddressString();
+    
+     /*
+ eth,
+  web3,
+  fromPrivateKey,
+  accountFrom,
+  accountTo
+     */
+    const acct1Privatekey = '54d5ee2fc7be63e650fce91aecebdf7cb779b63b389aeb849c60a5cf1ced227e';
+    const acc1 = accounts[0];
+    const tx = 
+     await utils.getSignedTransaction(12, 
+      web3, 
+      acct1Privatekey,
+      acc1,
+      publicKeyAddress
+      );
+      
+    var sTx = tx.serialize().toString("hex");
+    console.log(`Transaction id: ${sTx}`);
+  //send raw transaction
+   let tranhash = await web3.eth.sendSignedTransaction(sTx);
+   let ranReceipt  = await web3.eth.getTransactionReceipt(tranhash);
+  
+
+
+    assert.ok(ranReceipt, "has transaction");
   });
 
-  it("can get value", async () => {
+  xit("can get value", async () => {
     const prov = new Web3.providers.HttpProvider("http://localhost:8545");
     const web3 = new Web3(prov);
     const eth = web3.eth;
@@ -115,6 +117,22 @@ describe("web3 and hedgehog", function() {
     //  let amount = await web3.eth.getBalance(account);
     console.log(ethBal);
     assert.ok(ethBal === 100, "has amount");
+  });
+
+  xit("can send ether from one account to another using my local wallet", async () => {
+    const prov = new Web3.providers.HttpProvider("http://localhost:8545");
+    const web3 = new Web3(prov);
+    const eth = web3.eth;
+    let accounts = await eth.getAccounts();
+    
+    //get signed transaction & set in a var
+  // tx.serialize().toString("hex");
+  // var sTx = tx.serialize().toString("hex");
+
+  //send raw transaction
+ //  let tranhash = await web3.eth.sendSignedTransaction("0x" + tx.serialize().toString("hex"));
+ //  return await web3.eht.getTransactionReceipt(tranhash);
+  
   });
 
   xit("can transer money to wallet", async () => {
