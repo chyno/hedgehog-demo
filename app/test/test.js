@@ -70,7 +70,7 @@ describe("web3 and hedgehog", function() {
     assert.ok(wallet, "problem logging into hedge hog");
   });
 
-  it("Can send ether using hedgehog wallet", async () => {
+  xit("Can send ether using hedgehog wallet", async () => {
     const prov = new Web3.providers.HttpProvider("http://localhost:8545");
     const web3 = new Web3(prov);
     const eth = web3.eth;
@@ -99,13 +99,41 @@ describe("web3 and hedgehog", function() {
     console.log(`Transaction id: ${sTx}`);
   //send raw transaction
    let tranhash = await web3.eth.sendSignedTransaction(sTx);
-   let ranReceipt  = await web3.eth.getTransactionReceipt(tranhash);
+   //let ranReceipt  = await web3.eth.getTransactionReceipt(tranhash);
   
 
 
     assert.ok(ranReceipt, "has transaction");
   });
 
+  it("Can send ether from wallet to second account", async () => {
+    const prov = new Web3.providers.HttpProvider("http://localhost:8545");
+    const web3 = new Web3(prov);
+    const eth = web3.eth;
+    let accounts = await eth.getAccounts();
+    const wallet = await utils.getNewWallet(hedgehog, 'jchynoweth', 'password12345');
+    const walletPublicKey = wallet.getAddressString();
+    const workingPK = wallet.getPrivateKeyString();
+    const walletPrivateKey = workingPK.substring(2, workingPK.length);
+  //   const acct1Privatekey = '54d5ee2fc7be63e650fce91aecebdf7cb779b63b389aeb849c60a5cf1ced227e';
+     const toAcc = accounts[1];
+    const tx = 
+     await utils.getSignedTransaction(4, 
+      web3, 
+      walletPrivateKey,
+      walletPublicKey,
+      toAcc
+      );
+      
+  var sTx = tx.serialize().toString("hex");
+     console.log(`Transaction id: ${sTx}`);
+  // //send raw transaction
+  //  let tranhash = await web3.eth.sendSignedTransaction(sTx);
+  //  //let ranReceipt  = await web3.eth.getTransactionReceipt(tranhash);
+  
+
+  //   assert.ok(ranReceipt, "has transaction");
+  });
   xit("can get value", async () => {
     const prov = new Web3.providers.HttpProvider("http://localhost:8545");
     const web3 = new Web3(prov);
