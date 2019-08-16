@@ -24,7 +24,7 @@ const isValidResponse = (resp) => {
 }
 
 /**
- * Success response
+ * Success responseACCXCC
  */
 const sendResponse = (req, res, resp) => {
   res.status(resp.statusCode).send(resp.object)

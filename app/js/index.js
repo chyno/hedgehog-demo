@@ -7,28 +7,31 @@ let app = Elm.Main.init({
 
 app.ports.loginUser.subscribe(function(data) {
   // For testing
-  // app.ports.loginResult.send({
-  //   address: "12345",
-  //   isLoggedIn: false,
-  //   message: 'fail'
-  // });
+  console.log('... User logging in');
+  app.ports.loginResult.send({
+          address: '1234',
+          isLoggedIn: true,
+          message: "Success",
+          showInfos : "show infos"
+        });
 
-  hedgehog.login(data.userName, data.password).then(
-    () => {
-      app.ports.loginResult.send({
-        address: hedgehog.getWallet().getAddressString(),
-        isLoggedIn: isLoggedIn(),
-        message: "Success"
-      });
-    },
-    e => {
-      app.ports.loginResult.send({
-        address: "",
-        isLoggedIn: false,
-        message: e.message
-      });
-    }
-  );
+  // hedgehog.login(data.userName, data.password).then(
+  //   () => {
+  //     app.ports.loginResult.send({
+  //       address: hedgehog.getWallet().getAddressString(),
+  //       isLoggedIn: isLoggedIn(),
+  //       message: "Success",
+  //       shows: getShows
+  //     });
+  //   },
+  //   e => {
+  //     app.ports.loginResult.send({
+  //       address: "",
+  //       isLoggedIn: false,
+  //       message: e.message
+  //     });
+  //   }
+ // );
 });
 
 app.ports.logoutUser.subscribe(function() {
@@ -37,9 +40,11 @@ app.ports.logoutUser.subscribe(function() {
   app.ports.loginResult.send({
     address: "",
     isLoggedIn: false,
-    message: "User Logged out"
+    message: "User Logged out",
+    showInfos : ''
   });
 });
+
 app.ports.registerUser.subscribe(function(data) {
   hedgehog.logout();
   hedgehog.signUp(data.userName, data.password).then(
@@ -47,18 +52,38 @@ app.ports.registerUser.subscribe(function(data) {
       app.ports.loginResult.send({
         address: "",
         isLoggedIn: false,
-        message: "User Created"
+        message: "User Created",
+        showInfos : ''
       });
     },
     e => {
       app.ports.loginResult.send({
         address: "",
         isLoggedIn: false,
-        message: e.message
+        message: e.message,
+        showInfos : ''
       });
     }
   );
 });
+
+function getShows() {
+  return [
+    {
+      name: 'Friends',
+      Description: 'Lame show of young people doing nothing'
+    },
+    {
+      name: 'Silicon Valley',
+      Description: 'Show about silicon valley'
+    },
+    {
+      name: 'Breaking Bad',
+      Description: 'takes place in NM'
+    },
+
+  ];
+}
 
 function isLoggedIn() {
   if (hedgehog.isLoggedIn()) {
@@ -69,3 +94,5 @@ function isLoggedIn() {
     );
   }
 }
+
+

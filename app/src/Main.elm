@@ -1,6 +1,5 @@
 port module Main exposing (main)
 
-
 import Browser
 import Html.Events exposing (onInput, onClick)
 import Html exposing (p,
@@ -10,8 +9,8 @@ import Html exposing (p,
  strong, span, button)
 import Html.Attributes exposing (..)
 import Json.Encode as E
-
-
+import Model exposing (..)
+import Show exposing (..)
 init : String ->  ( Model, Cmd Msg )
 init  flag =  (initdata, Cmd.none)  
 
@@ -23,55 +22,15 @@ tabClassString model tab =
   else
     "tab"  
 
-type ActiveLoginTab =  CreateAccountTab
-                       | LoggingInTab
-                       | LoggedInTab
-
-type ActivePage =  LoginPage  
-                   | AdaptionPage 
-
-type Msg = PageNavigate ActivePage
-            | TabNavigate ActiveLoginTab
-            |   SuccessLogin LoginResult
-            |   UpdateUserName String
-            |   UpdatePassword String
-            |   UpdateNewPassword String
-            |   UpdateNewConfirmPassword String
-            |   StartLogin
-            |   Logout
-            |   RegisterUser
-
-type alias Model =
-  {
-    userInfo : UserInfo,
-    loginResult: LoginResult,
-    activeTab: ActiveLoginTab,
-    activePage: ActivePage
-  }
-
-type alias LoginResult =
-  {
-    isLoggedIn : Bool,
-    address: String,
-    message: String
-  }
-
-
-
-type alias UserInfo =
-  {
-    userName : String,
-    password: String,
-    passwordConfimation: String
-  }
-     
+ 
 initdata : Model
 initdata = 
     { 
     loginResult = {
       isLoggedIn = False,
       address = "-",
-      message = ""
+      message = "",
+      showInfos = ""
     },
       userInfo = {
           userName = "",
@@ -83,16 +42,16 @@ initdata =
     activePage = LoginPage  
     }
 
-adaptionView : Model -> Html Msg
-adaptionView model = 
-    div [][
-            p [][ text "Your wallet address is:" ]
-            , p [ class "address" ]
-                [ text model.loginResult.address ]
-            , div [ class "button", onClick  (PageNavigate LoginPage   ) ]
-                [ text "Log Out"  ]
+-- adaptionView : Model -> Html Msg
+-- adaptionView model = 
+--     div [][
+--             p [][ text "Your wallet address is:" ]
+--             , p [ class "address" ]
+--                 [ text model.loginResult.address ]
+--             , div [ class "button", onClick  (PageNavigate LoginPage   ) ]
+--                 [ text "Log Out"  ]
 
-    ]
+--     ]
 
 headersView : Model -> Html Msg
 headersView model =
@@ -199,7 +158,7 @@ update msg model =
             True ->
                 ({ model | loginResult = data, 
                 activeTab = LoggedInTab, 
-                activePage = AdaptionPage   }, Cmd.none)
+                activePage = ShowsPage   }, Cmd.none)
             False ->
                 ({ model | loginResult = data   }, Cmd.none)
     
@@ -229,7 +188,8 @@ update msg model =
        loginResult = {
                     isLoggedIn = False
                     , address = "-"
-                    , message = "" 
+                    , message = ""
+                    , showInfos = ""
                  }
         }, loginUser  model.userInfo)
     Logout ->
@@ -267,14 +227,11 @@ updateTab msg model =
                 }
          }, Cmd.none)
 
-   
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     loginResult SuccessLogin
 
  
-
 signedInView : Model -> Html Msg
 signedInView model = 
   div [ class "message" ]
@@ -309,8 +266,8 @@ view model =
         vw = case model.activePage of
                 LoginPage   ->
                   tabView model
-                AdaptionPage   ->
-                  adaptionView model        
+                ShowsPage   ->
+                  showsView model        
     in
   div [ id "root" ]
       [ div [ class "app" ]
@@ -328,4 +285,4 @@ main =
 port registerUser : UserInfo-> Cmd msg 
 port loginUser : UserInfo -> Cmd msg
 port logoutUser : UserInfo -> Cmd msg
-port loginResult : (LoginResult -> msg) -> Sub msg
+port loginResult : (LoginResultInfo -> msg) -> Sub msg
