@@ -11,8 +11,11 @@ app.ports.loginUser.subscribe(function(data) {
   app.ports.loginResult.send({
           address: '1234',
           isLoggedIn: true,
-          message: "Success",
-          showInfos : "show infos"
+          message: "Success 2",
+          showInfos : [
+            {name: 'friends', description: 'lame show'},
+            {name: 'Silicon valley', description: 'about computer geeks'}
+          ]
         });
 
   // hedgehog.login(data.userName, data.password).then(

@@ -30,7 +30,7 @@ initdata =
       isLoggedIn = False,
       address = "-",
       message = "",
-      showInfos = ""
+      showInfos = []
     },
       userInfo = {
           userName = "",
@@ -189,7 +189,7 @@ update msg model =
                     isLoggedIn = False
                     , address = "-"
                     , message = ""
-                    , showInfos = ""
+                    , showInfos = []
                  }
         }, loginUser  model.userInfo)
     Logout ->

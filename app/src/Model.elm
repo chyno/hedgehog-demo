@@ -19,7 +19,7 @@ type alias LoginResultInfo =
      isLoggedIn : Bool
     , address: String
     , message: String
-    , showInfos: String
+    , showInfos: List ShowInfo
   }
 
 type alias UserInfo =
