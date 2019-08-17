@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon --watch src --ext *  server.js ",
     "test": "mocha",
-    "start": "node server.js"
+    "start": "node server.js",
+    "prod" : "node server.js"
   },
   "author": "John Chynoweth",
   "license": "ISC",
